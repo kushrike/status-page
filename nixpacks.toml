@@ -1,23 +1,20 @@
 [phases.setup]
 nixpkgs = ['python39', 'poetry', 'gcc']
-cmds = [
-  'cd backend'
-]
 
 [phases.install]
 cmds = [
   'python -m pip install --upgrade pip',
   'pip install poetry',
-  'cd backend && poetry install --no-dev'
+  'poetry install --no-dev'
 ]
 
 [phases.build]
 cmds = [
-  'cd backend && python manage.py collectstatic --noinput'
+  'python manage.py collectstatic --noinput'
 ]
 
 [start]
-cmd = 'cd backend && daphne -b 0.0.0.0 -p $PORT config.asgi:application'
+cmd = 'daphne -b 0.0.0.0 -p $PORT config.asgi:application'
 
 [variables]
-PYTHONPATH = "backend" 
+DJANGO_SETTINGS_MODULE = "config.settings" 
