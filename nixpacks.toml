@@ -1,10 +1,11 @@
 [phases.setup]
-nixpkgs = ['python39', 'python39Packages.pip', 'poetry', 'gcc']
+nixpkgs = ['python39', 'gcc']
 
 [phases.install]
 cmds = [
-  'pip3 install --upgrade pip',
-  'pip3 install poetry',
+  'python -m ensurepip --upgrade',
+  'python -m pip install --upgrade pip',
+  'python -m pip install poetry',
   'poetry install --no-dev'
 ]
 
@@ -20,4 +21,5 @@ cmd = 'daphne -b 0.0.0.0 -p $PORT config.asgi:application'
 DJANGO_SETTINGS_MODULE = "config.settings"
 WSGI_APPLICATION = "config.wsgi:application"
 ASGI_APPLICATION = "config.asgi:application"
-PYTHONUNBUFFERED = "1" 
+PYTHONUNBUFFERED = "1"
+PATH = "/root/.local/bin:${PATH}" 
