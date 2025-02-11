@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "status-page"
+version = "0.1.0"
+description = "A status page application with real-time updates"
+authors = ["Your Name <your.email@example.com>"]
+package-mode = false
+packages = [
+    { include = "config" },
+    { include = "core" },
+    { include = "services" },
+    { include = "incidents" },
+    { include = "organizations" },
+    { include = "users" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.2.0"
+djangorestframework = "^3.14.0"
+django-cors-headers = "^4.3.1"
+django-filter = "^23.5"
+daphne = "^4.0.0"
+channels = "^4.0.0"
+channels-redis = "^4.1.0"
+celery = "^5.3.6"
+redis = "^5.0.1"
+psycopg2-binary = "^2.9.9"
+python-dotenv = "^1.0.0"
+gunicorn = "^21.2.0"
+whitenoise = "^6.6.0"
+PyJWT = "^2.8.0"
+cryptography = "^41.0.7"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+pytest = "^7.4.4"
+pytest-django = "^4.7.0"
+pytest-asyncio = "^0.23.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3 
