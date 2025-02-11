@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+      - static_volume:/app/staticfiles
+    networks:
+      - status_page_network
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - ./backend:/app
+    networks:
+      - status_page_network
+
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.celery
+    command: celery -A config beat --loglevel=info
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - celery
+    volumes:
+      - ./backend:/app
+    networks:
+      - status_page_network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"  # Expose Redis port for external connections
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes  # Enable persistence
+    networks:
+      - status_page_network
+
+volumes:
+  redis_data:
+  static_volume:
+
+networks:
+  status_page_network:
+    driver: bridge 
