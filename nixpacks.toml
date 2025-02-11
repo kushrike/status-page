@@ -17,4 +17,6 @@ cmds = [
 cmd = 'daphne -b 0.0.0.0 -p $PORT config.asgi:application'
 
 [variables]
-DJANGO_SETTINGS_MODULE = "config.settings" 
+DJANGO_SETTINGS_MODULE = "config.settings"
+WSGI_APPLICATION = "config.wsgi:application"
+ASGI_APPLICATION = "config.asgi:application" 
