@@ -1,5 +1,8 @@
 [phases.setup]
 nixpkgs = ['python39', 'poetry', 'gcc']
+cmds = [
+  'cd backend'
+]
 
 [phases.install]
 cmds = [
@@ -14,4 +17,7 @@ cmds = [
 ]
 
 [start]
-cmd = 'cd backend && daphne -b 0.0.0.0 -p $PORT config.asgi:application' 
+cmd = 'cd backend && daphne -b 0.0.0.0 -p $PORT config.asgi:application'
+
+[variables]
+PYTHONPATH = "backend" 
