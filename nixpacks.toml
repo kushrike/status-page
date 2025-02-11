@@ -1,11 +1,15 @@
 [phases.setup]
-nixpkgs = ['python39', 'gcc']
+nixpkgs = ['python39', 'gcc', 'curl']
+cmds = [
+  'curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py',
+  'python get-pip.py --user',
+  'rm get-pip.py'
+]
 
 [phases.install]
 cmds = [
-  'python -m ensurepip --upgrade',
-  'python -m pip install --upgrade pip',
-  'python -m pip install poetry',
+  'python -m pip install --user poetry',
+  'poetry config virtualenvs.create false',
   'poetry install --no-dev'
 ]
 
