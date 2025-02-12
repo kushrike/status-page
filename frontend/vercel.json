@@ -1,21 +1,4 @@
 {
-  "rewrites": [
-    {
-      "source": "/sign-in(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/sign-up(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/login(.*)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "cleanUrls": true
 } 
