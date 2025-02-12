@@ -1,6 +1,7 @@
-import { useAuth, useOrganization } from '@clerk/clerk-react';
+import { useAuth, useOrganization, useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
 export class AuthError extends Error {
   constructor(message: string) {
@@ -47,6 +48,23 @@ export function useAuthToken() {
   };
 
   return { getAuthToken, organization };
+}
+
+// Fixed hook to check if user is an admin
+export function useIsAdmin() {
+  const { user } = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    async function checkRole() {
+      if (!user) return;
+      const memberships = await user.getOrganizationMemberships();
+      setIsAdmin(memberships[0]?.role === 'org:admin');
+    }
+    checkRole();
+  }, [user]);
+
+  return isAdmin;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

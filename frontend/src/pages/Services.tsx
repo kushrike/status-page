@@ -13,6 +13,7 @@ import { Pagination } from '../components/Pagination';
 import { ServiceModal } from '../components/ServiceModal';
 import toast from 'react-hot-toast';
 import { getWebSocketManager, addWebSocketHandler } from '../utils/websocket';
+import { useIsAdmin } from '../utils/auth';
 
 function ServiceStatusIcon({ status }: { status: Service['status'] }) {
   switch (status) {
@@ -36,6 +37,7 @@ function Services() {
   const [selectedService, setSelectedService] = useState<Service | undefined>();
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState(20);
+  const isAdmin = useIsAdmin();
 
   const queryClient = useQueryClient();
 
@@ -166,18 +168,20 @@ function Services() {
             Complete list of all services and their current status. Showing {rows} items per page.
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            onClick={() => {
-              setSelectedService(undefined);
-              setIsModalOpen(true);
-            }}
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-            Add Service
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            <button
+              onClick={() => {
+                setSelectedService(undefined);
+                setIsModalOpen(true);
+              }}
+              className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
+            >
+              <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
+              Add Service
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 flex flex-col">
@@ -205,9 +209,11 @@ function Services() {
                     >
                       Description
                     </th>
-                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                      <span className="sr-only">Actions</span>
-                    </th>
+                    {isAdmin && (
+                      <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                        <span className="sr-only">Actions</span>
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -223,23 +229,25 @@ function Services() {
                         </div>
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500">{service.description}</td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <button
-                          onClick={() => {
-                            setSelectedService(service);
-                            setIsModalOpen(true);
-                          }}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(service.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Delete
-                        </button>
-                      </td>
+                      {isAdmin && (
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                          <button
+                            onClick={() => {
+                              setSelectedService(service);
+                              setIsModalOpen(true);
+                            }}
+                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(service.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -259,7 +267,7 @@ function Services() {
         />
       )}
 
-      {isModalOpen && (
+      {isModalOpen && isAdmin && (
         <ServiceModal
           service={selectedService}
           onClose={() => {

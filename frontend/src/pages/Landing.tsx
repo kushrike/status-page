@@ -60,12 +60,7 @@ export default function Landing() {
             <Button type="submit" variant="contained" size="large" fullWidth>
               View Status Page
             </Button>
-            <Button
-              onClick={() => navigate('/login')}
-              variant="outlined"
-              size="large"
-              fullWidth
-            >
+            <Button onClick={() => navigate('/login')} variant="outlined" size="large" fullWidth>
               Login to Dashboard
             </Button>
           </Stack>

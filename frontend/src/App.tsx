@@ -70,9 +70,14 @@ function App() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/" element={isSignedIn ? <Navigate to="/dashboard" replace /> : <Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/sign-up" element={<Login />} />
+      <Route
+        path="/"
+        element={isLoaded && isSignedIn ? <Navigate to="/dashboard" replace /> : <Landing />}
+      />
+
+      {/* Auth Routes - Use wildcard to allow Clerk to handle sub-routes */}
+      <Route path="/login/*" element={<Login />} />
+      <Route path="/sign-up/*" element={<Login />} />
       <Route path="/org/:orgSlug" element={<PublicDashboard />} />
 
       {/* Protected Routes */}
@@ -88,7 +93,13 @@ function App() {
       {/* Catch all route - redirect to landing or dashboard */}
       <Route
         path="*"
-        element={isSignedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/" replace />}
+        element={
+          isLoaded && isSignedIn ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        }
       />
     </Routes>
   );

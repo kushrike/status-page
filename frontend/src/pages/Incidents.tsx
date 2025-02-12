@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import {
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-} from '@heroicons/react/24/solid';
+import { CheckCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import { fetchIncidents, createIncident, updateIncident, deleteIncident } from '../api';
 import { Incident, PaginatedResponse } from '../types/types';
 import { Pagination } from '../components/Pagination';
@@ -13,6 +10,7 @@ import { format } from 'date-fns';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { getWebSocketManager, addWebSocketHandler } from '../utils/websocket';
 import { IncidentModal } from '../components/IncidentModal';
+import { useIsAdmin } from '../utils/auth';
 
 function IncidentStatusIcon({ status }: { status: Incident['status'] }) {
   switch (status.toLowerCase()) {
@@ -50,6 +48,7 @@ function Incidents() {
   const [selectedIncident, setSelectedIncident] = useState<Incident | undefined>();
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState(20);
+  const isAdmin = useIsAdmin();
 
   const queryClient = useQueryClient();
 
@@ -185,21 +184,23 @@ function Incidents() {
             A list of all incidents and their current status.
           </p>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            onClick={() => {
-              setSelectedIncident(undefined);
-              setIsModalOpen(true);
-            }}
-            className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
-            Add Incident
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            <button
+              onClick={() => {
+                setSelectedIncident(undefined);
+                setIsModalOpen(true);
+              }}
+              className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
+            >
+              <PlusIcon className="-ml-1 mr-2 h-5 w-5" />
+              Add Incident
+            </button>
+          </div>
+        )}
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && isAdmin && (
         <IncidentModal
           incident={selectedIncident}
           onClose={() => {
@@ -247,9 +248,11 @@ function Incidents() {
                     >
                       Started At
                     </th>
-                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                      <span className="sr-only">Actions</span>
-                    </th>
+                    {isAdmin && (
+                      <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                        <span className="sr-only">Actions</span>
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -276,25 +279,27 @@ function Incidents() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {format(new Date(incident.started_at), 'MMM d, yyyy HH:mm')}
                       </td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        {incident.status !== 'resolved' && (
+                      {isAdmin && (
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                          {incident.status !== 'resolved' && (
+                            <button
+                              onClick={() => {
+                                setSelectedIncident(incident);
+                                setIsModalOpen(true);
+                              }}
+                              className="text-indigo-600 hover:text-indigo-900 mr-4"
+                            >
+                              Edit
+                            </button>
+                          )}
                           <button
-                            onClick={() => {
-                              setSelectedIncident(incident);
-                              setIsModalOpen(true);
-                            }}
-                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                            onClick={() => handleDelete(incident.id)}
+                            className="ml-4 text-red-600 hover:text-red-900"
                           >
-                            Edit
+                            Delete
                           </button>
-                        )}
-                        <button
-                          onClick={() => handleDelete(incident.id)}
-                          className="ml-4 text-red-600 hover:text-red-900"
-                        >
-                          Delete
-                        </button>
-                      </td>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

@@ -163,4 +163,4 @@ export function IncidentModal({ incident, onClose, onSubmit }: IncidentModalProp
       </div>
     </div>
   );
-} 
+}

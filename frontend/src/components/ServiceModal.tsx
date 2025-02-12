@@ -91,4 +91,4 @@ export function ServiceModal({ service, onClose, onSubmit }: ServiceModalProps) 
       </div>
     </div>
   );
-} 
+}

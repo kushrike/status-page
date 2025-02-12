@@ -5,7 +5,13 @@ function Login() {
   return (
     <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
-        <SignIn signUpUrl={undefined} routing="path" path="/login" />
+        <SignIn
+          signUpUrl={undefined}
+          routing="path"
+          path="/login"
+          redirectUrl="/dashboard"
+          afterSignInUrl="/dashboard"
+        />
       </Paper>
     </Container>
   );
