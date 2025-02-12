@@ -1,0 +1,22 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/sign-in(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/sign-up(.*)",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/login(.*)",
+      "dest": "/index.html"
+    }
+  ]
+} 
