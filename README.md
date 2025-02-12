@@ -14,6 +14,32 @@ A modern, real-time status page system built with Django and React. Monitor your
 - 🔄 Automatic reconnection with exponential backoff
 - 🛡️ Rate limiting on public endpoints
 
+## Current Deployments:  
+
+**Application:** [https://status-page-day.vercel.app](https://status-page-day.vercel.app)  
+**Backend:** [https://status-page-3xr4s.kinsta.app](https://status-page-3xr4s.kinsta.app)  
+_(came across this VPS on a Fireship video, and chose to give it a shot. Not the best of choices tbh - does not support WS)_  
+
+I have created two organizations to test out the multi-tenancy behavior:  
+
+### 1. org-slug: `dance`  
+**Logins:**  
+- **Admin:**  
+  - Email: `test1@status.com` | Password: `test1@status.com`  
+- **Member:**  
+  - Email: `member@status.com` | Password: `member@status.com`  
+
+### 2. org-slug: `sing`  
+**Logins:**  
+- **Admins:**  
+  - Email: `admin1@org.com` | Password: `admin1@org.com`  
+  - Email: `admin2@org.com` | Password: `admin2@org.com`  
+- **Members:**  
+  - Email: `member1@org.com` | Password: `member1@org.com`  
+  - Email: `member2@org.com` | Password: `member2@org.com`  
+
+**Note:** New signups create a new org automatically.
+
 ## Architecture
 
 ### System Components
@@ -41,9 +67,11 @@ A modern, real-time status page system built with Django and React. Monitor your
 
 ## Authentication & Authorization
 
+#### As of now, all the auth&auth behaviour is handled by Clerk
+
 1. **Authentication Flow**
    ```
-   User → Clerk.js → JWT Token → Backend Validation
+   User → Clerk → JWT Token → Backend Validation
    ```
 
 2. **WebSocket Authentication**
@@ -355,6 +383,7 @@ sequenceDiagram
    - JWT contains org claims
    - Rate limits per org
    - Separate WebSocket channels per org
+#### As of now, organization management is handled by Clerk
 
 
 ## Service Status Management
@@ -563,3 +592,19 @@ sequenceDiagram
    npm run lint
    npm run format
    ``` 
+
+
+## Current System Limitations and Potential Areas for Improvement  
+
+### 1. Authentication & Organization Management  
+- Tight coupling with Clerk for authentication  
+- Organization management is dependent on Clerk's organization features  
+- Migration to a different auth provider would require significant refactoring  
+
+### 2. Real-time Updates  
+- No fallback mechanism if WebSocket connection fails
+- No message queue for handling WebSocket message backlog  
+
+### 3. Incident Management  
+- No support for scheduled maintenance windows as of now
+- One incident is constrained to only one service in the current design
