@@ -45,6 +45,10 @@ class ClerkAuthentication(authentication.BaseAuthentication):
             token = auth_header.split(" ")[1]
             logger.info("Attempting to decode token")
 
+            logger.info(f"Public Key: {settings.CLERK_PEM_PUBLIC_KEY}")
+            logger.info(f"Token: {token}")
+            logger.info(f"Token: {settings.CLERK_JWT_AUDIENCE}")
+            logger.info(f"Token: {settings.CLERK_ISSUER_URL}")
             payload = jwt.decode(
                 token,
                 settings.CLERK_PEM_PUBLIC_KEY,
