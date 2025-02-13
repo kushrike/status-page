@@ -145,7 +145,10 @@ class ServiceViewSet(viewsets.ModelViewSet):
             Response: Paginated search results
         """
         query = request.query_params.get("q", "").strip()
-        services = Service.active.search_services(query=query)
+        services = Service.active.search_services(
+            query=query,
+            org=request.user.org
+        )
         page = self.paginate_queryset(services)
         serializer = ServiceSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
