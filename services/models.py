@@ -21,7 +21,7 @@ class ActiveManager(models.Manager):
         return super().get_queryset().filter(is_deleted=False)
 
     def search_services(
-        self, query: str = None, is_active: bool = True
+        self, query: str = None, is_active: bool = True, org=None
     ) -> models.QuerySet:
         """
         Search for services with pagination support.
@@ -29,11 +29,15 @@ class ActiveManager(models.Manager):
         Args:
             query (str, optional): Search query string to filter services by name or description
             is_active (bool): Filter for active services only. Defaults to True.
+            org: Organization to filter services by. Required for proper data isolation.
 
         Returns:
             models.QuerySet: Filtered and ordered queryset of services
         """
-        queryset = self.get_queryset().filter(is_active=is_active)
+        if org is None:
+            raise ValueError("Organization is required for searching services")
+
+        queryset = self.get_queryset().filter(is_active=is_active, org=org)
 
         if query:
             queryset = queryset.filter(
