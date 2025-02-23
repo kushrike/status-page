@@ -40,6 +40,7 @@ services:
       - ./backend/.env
     depends_on:
       - celery
+      - redis
     volumes:
       - ./backend:/app
     networks:
@@ -48,10 +49,10 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"  # Expose Redis port for external connections
+      - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes  # Enable persistence
+    command: redis-server --appendonly yes
     networks:
       - status_page_network
 
